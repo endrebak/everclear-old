@@ -29,6 +29,32 @@
   (def chsk-state state)   ; Watchable, read-only atom
   )
 
+(defmulti -event-msg-handler
+  "Multimethod to handle Sente `event-msg`s"
+  :id ; Dispatch on event-id
+  )
+
+(defn event-msg-handler
+  "Wraps `-event-msg-handler` with logging, error catching, etc."
+  [{:as ev-msg :keys [id ?data event]}]
+  (-event-msg-handler ev-msg))
+
+
+(defmethod -event-msg-handler :chsk/recv
+  [{:as ev-msg :keys [?data]}]
+  (js/alert "Push event from server woop wopp: %s" ?data))
+
+
+(defmethod -event-msg-handler :h/h
+  [{:as ev-msg :keys [?data]}]
+  (js/alert (str "correctamundo " ?data)))
+
+(defmethod -event-msg-handler
+  :default ; Default/fallback case (no other matching handler)
+  [{:as ev-msg :keys [event]}]
+  (println "Unhandled event: %s" event))
+
+
 
 (defn everflow-page []
   (let []
@@ -38,3 +64,14 @@
       {:type "button" :value "Click me!"
        :on-click #(chsk-send! [:everflow/button "Hooo!"])}]]))
 
+(defonce router_ (atom nil))
+(defn  stop-router! [] (when-let [stop-f @router_] (stop-f)))
+(defn start-router! []
+  (stop-router!)
+  (reset! router_
+          (sente/start-client-chsk-router!
+           ch-chsk event-msg-handler)))
+
+(defn start! [] (start-router!))
+
+(defonce _start-once (start!))

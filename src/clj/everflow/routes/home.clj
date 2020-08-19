@@ -28,6 +28,18 @@
 (defn home-page [request]
   (layout/render request "home.html"))
 
+
+
+(defn login-handler
+  "Here's where you'll add your server-side login/auth procedure (Friend, etc.).
+  In our simplified example we'll just always successfully authenticate the user
+  with whatever user-id they provided in the auth request."
+  [ring-req]
+  (let [{:keys [session params]} ring-req
+        {:keys [user-id]} params]
+    (println "Login request: %s" params)
+    {:status 200 :session (assoc session :uid user-id)}))
+
 (defn home-routes []
   [""
    {:middleware [ring.middleware.keyword-params/wrap-keyword-params
@@ -59,6 +71,7 @@
   [{:as ev-msg :keys [event]}]
   (println "Unhandled event: %s" event))
 
+
 (defmethod -event-msg-handler
   :default ; Default/fallback case (no other matching handler)
   [{:as ev-msg :keys [event id ?data ring-req ?reply-fn send-fn]}]
@@ -69,7 +82,6 @@
 
 (defmethod -event-msg-handler :everflow/button
   [ev-msg] (println (:?data ev-msg)))
-
 
 
 ;; (defmethod -event-msg-handler :example/toggle-broadcast

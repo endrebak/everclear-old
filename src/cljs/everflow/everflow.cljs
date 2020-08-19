@@ -42,7 +42,7 @@
 
 (defmethod -event-msg-handler :chsk/recv
   [{:as ev-msg :keys [?data]}]
-  (js/alert "Push event from server woop wopp: %s" ?data))
+  (js/alert (str "Push event from server woop wopp: " ?data)))
 
 
 (defmethod -event-msg-handler :h/h
@@ -75,3 +75,20 @@
 (defn start! [] (start-router!))
 
 (defonce _start-once (start!))
+
+;; lein repl :connect 7000
+;; Connecting to nREPL at 127.0.0.1:7000
+;; REPL-y 0.4.3, nREPL 0.6.0
+;; Clojure 1.10.1
+;; OpenJDK 64-Bit Server VM 1.8.0_152-release-1056-b12
+;; Docs: (doc function-name-here)
+;; (find-doc "part-of-name-here")
+;; Source: (source function-name-here)
+;; Javadoc: (javadoc java-object-or-class-here)
+;; Exit: Control+D or (exit) or (quit)
+;; Results: Stored in vars *1, *2, *3, an exception in *e
+
+;; (require 'everflow.routes.home)
+;; (in-ns 'everflow.routes.home)
+;; @connected-uids
+;; (chsk-send! :sente/all-users-without-uid [:h/h "Hooooo!"])

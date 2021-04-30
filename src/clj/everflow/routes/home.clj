@@ -10,10 +10,11 @@
    [ring.middleware.anti-forgery :refer [wrap-anti-forgery]]
    [ring.middleware.params]
    [ring.middleware.keyword-params]
-   [taoensso.sente.server-adapters.http-kit :refer (get-sch-adapter)]
-   ))
+   [taoensso.sente.server-adapters.http-kit :refer (get-sch-adapter)]))
 
 ;; from sente README example
+
+
 (let [{:keys [ch-recv send-fn connected-uids
               ajax-post-fn ajax-get-or-ws-handshake-fn]}
       (sente/make-channel-socket! (get-sch-adapter) {})]
@@ -23,12 +24,15 @@
   (def ch-chsk                       ch-recv) ; ChannelSocket's receive channel
   (def chsk-send!                    send-fn) ; ChannelSocket's send API fn
   (def connected-uids                connected-uids) ; Watchable, read-only atom
-  )
+  (println (str "@connected-uids: " @connected-uids)))
+
+(add-watch connected-uids :connected-uids
+           (fn [_ _ old new]
+             (when (not= old new)
+               (println "Connected uids change: %s" new))))
 
 (defn home-page [request]
   (layout/render request "home.html"))
-
-
 
 (defn login-handler
   "Here's where you'll add your server-side login/auth procedure (Friend, etc.).
@@ -53,7 +57,6 @@
    ["/chsk" {:get ring-ajax-get-or-ws-handshake
              :post ring-ajax-post}]])
 
-
 (defmulti -event-msg-handler
   "Multimethod to handle Sente `event-msg`s"
   :id ; Dispatch on event-id
@@ -70,7 +73,6 @@
   :default ; Default/fallback case (no other matching handler)
   [{:as ev-msg :keys [event]}]
   (println "Unhandled event: %s" event))
-
 
 (defmethod -event-msg-handler
   :default ; Default/fallback case (no other matching handler)
@@ -90,6 +92,14 @@
 ;;     (?reply-fn loop-enabled?)))
 
 
+(defn start-example-broadcaster!
+  "Hio"
+  []
+  (while true
+    (Thread/sleep 10000)
+    (doseq [uid (:any @connected-uids)]
+      (chsk-send! uid [:h/h (str "hello " uid "!!")]))))
+
 (defonce router_ (atom nil))
 (defn  stop-router! [] (when-let [stop-fn @router_] (stop-fn)))
 (defn start-router! []
@@ -98,7 +108,11 @@
           (sente/start-server-chsk-router!
            ch-chsk event-msg-handler)))
 
-
 (defn start! [] (start-router!))
+  ;; (start-example-broadcaster!))
 
 (defonce _start-once (start!))
+
+;;; repl
+; (require 'everflow.routes.home)
+; (in-ns 'everflow.routes.home)

@@ -7,7 +7,6 @@
    [taoensso.sente  :as sente :refer (cb-success?)] ; <--- Add this
    ))
 
-
 (def ?csrf-token
   (when-let [el (.getElementById js/document "sente-csrf-token")]
     (.getAttribute el "data-csrf-token")))
@@ -39,11 +38,9 @@
   [{:as ev-msg :keys [id ?data event]}]
   (-event-msg-handler ev-msg))
 
-
 (defmethod -event-msg-handler :chsk/recv
   [{:as ev-msg :keys [?data]}]
-  (js/alert (str "Push event from server woop wopp: " ?data)))
-
+  (js/console.log (str "Push event from server woop wopp: " ?data)))
 
 (defmethod -event-msg-handler :h/h
   [{:as ev-msg :keys [?data]}]
@@ -53,8 +50,6 @@
   :default ; Default/fallback case (no other matching handler)
   [{:as ev-msg :keys [event]}]
   (println "Unhandled event: %s" event))
-
-
 
 (defn everflow-page []
   (let []

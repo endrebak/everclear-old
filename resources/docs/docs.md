@@ -4,7 +4,7 @@ This page will help guide you through the first steps of building your site.
 
 #### Why are you seeing this page?
 
-The `home-routes` handler in the `everflow.routes.home` namespace
+The `home-routes` handler in the `everclear.routes.home` namespace
 defines the route that invokes the `home-page` function whenever an HTTP
 request is made to the `/` URI using the `GET` method.
 
@@ -19,7 +19,7 @@ request is made to the `/` URI using the `GET` method.
                         (response/header "Content-Type" "text/plain; charset=utf-8")))}]])
 ```
 
-The `home-page` function will in turn call the `everflow.layout/render` function
+The `home-page` function will in turn call the `everclear.layout/render` function
 to render the HTML content:
 
 ```
@@ -33,13 +33,13 @@ The page contains a link to the compiled ClojureScript found in the `target/cljs
 {% script "/js/app.js" %}
 ```
 
-The rest of this page is rendered by ClojureScript found in the `src/cljs/everflow/core.cljs` file.
+The rest of this page is rendered by ClojureScript found in the `src/cljs/everclear/core.cljs` file.
 
 
 
 #### Organizing the routes
 
-The routes are aggregated and wrapped with middleware in the `everflow.handler` namespace:
+The routes are aggregated and wrapped with middleware in the `everclear.handler` namespace:
 
 ```
 (mount/defstate app
@@ -69,12 +69,12 @@ A default route group is added to handle the `404`, `405`, and `406` errors.
 
 #### Managing your middleware
 
-Request middleware functions are located under the `everflow.middleware` namespace.
+Request middleware functions are located under the `everclear.middleware` namespace.
 
 This namespace is reserved for any custom middleware for the application. Some default middleware is
 already defined here. The middleware is assembled in the `wrap-base` function.
 
-Middleware used for development is placed in the `everflow.dev-middleware` namespace found in
+Middleware used for development is placed in the `everclear.dev-middleware` namespace found in
 the `env/dev/clj/` source path.
 
 <a class="btn btn-primary" href="http://www.luminusweb.net/docs/middleware.md">learn more about middleware »</a>

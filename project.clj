@@ -1,9 +1,11 @@
-(defproject everflow "0.1.0-SNAPSHOT"
+(defproject everclear "0.1.0-SNAPSHOT"
 
   :description "FIXME: write description"
   :url "http://example.com/FIXME"
 
-  :dependencies [
+  :dependencies [[org.clojure/math.combinatorics "0.1.6"]
+                 [hawk "0.2.11"]
+                 [com.stuartsierra/dependency "1.0.0"]
                  [com.taoensso/sente "1.14.0-RC2"]
                  ;; luminus
                  [ch.qos.logback/logback-classic "1.2.3"]
@@ -43,12 +45,12 @@
                  [thheller/shadow-cljs "2.8.69" :scope "provided"]]
 
   :min-lein-version "2.0.0"
-  
+
   :source-paths ["src/clj" "src/cljs" "src/cljc"]
   :test-paths ["test/clj"]
   :resource-paths ["resources" "target/cljsbuild"]
   :target-path "target/%s/"
-  :main ^:skip-aot everflow.core
+  :main ^:skip-aot everclear.core
 
   :plugins [[lein-shadow "0.1.7"]]
   :clean-targets ^{:protect false}
@@ -60,7 +62,7 @@
     {:target :browser
      :output-dir "target/cljsbuild/public/js"
      :asset-path "/js"
-     :modules {:app {:entries [everflow.app]}}
+     :modules {:app {:entries [everclear.app]}}
      :devtools
      {:watch-dir "resources/public" :preloads [re-frisk.preload]}
      :dev
@@ -69,7 +71,7 @@
     {:target :node-test
      :output-to "target/test/test.js"
      :autorun true}}}
-  
+
   :npm-deps [[shadow-cljs "2.8.69"]
              [create-react-class "15.6.3"]
              [react "16.8.6"]
@@ -78,9 +80,9 @@
   :profiles
   {:uberjar {:omit-source true
              :prep-tasks ["compile" ["shadow" "release" "app"]]
-             
+
              :aot :all
-             :uberjar-name "everflow.jar"
+             :uberjar-name "everclear.jar"
              :source-paths ["env/prod/clj" "env/prod/cljs"]
              :resource-paths ["env/prod/resources"]}
 
@@ -97,17 +99,14 @@
                                  [ring/ring-mock "0.4.0"]]
                   :plugins      [[com.jakemccrary/lein-test-refresh "0.24.1"]
                                  [jonase/eastwood "0.3.5"]]
-                  
-                  
+
                   :source-paths ["env/dev/clj" "env/dev/cljs" "test/cljs"]
                   :resource-paths ["env/dev/resources"]
                   :repl-options {:init-ns user}
                   :injections [(require 'pjstadig.humane-test-output)
                                (pjstadig.humane-test-output/activate!)]}
    :project/test {:jvm-opts ["-Dconf=test-config.edn"]
-                  :resource-paths ["env/test/resources"]
-                  
-                  
-                  }
+                  :resource-paths ["env/test/resources"]}
+
    :profiles/dev {}
    :profiles/test {}})

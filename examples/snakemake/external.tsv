@@ -1,0 +1,3 @@
+ID	genome	external
+:genome	hg38	hg38.fasta
+:genome	hg19	hg19.fasta

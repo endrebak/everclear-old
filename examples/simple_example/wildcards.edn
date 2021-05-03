@@ -1,0 +1,8 @@
+[{:genome "hg19" :sample "A" :chromosome "chr1"}
+ {:genome "hg19" :sample "B" :chromosome "chr1"}
+ {:genome "hg19" :sample "A" :chromosome "chr2"}
+ {:genome "hg19" :sample "B" :chromosome "chr2"}
+ ;; {:genome "hg38" :sample "A"}
+ ;; {:genome "hg38" :sample "B"}
+ ;; {:genome "hg38" :sample "C"}
+ ]

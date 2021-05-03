@@ -1,1 +1,1 @@
-web: java -cp target/uberjar/everflow.jar clojure.main -m everflow.core
+web: java -cp target/uberjar/everclear.jar clojure.main -m everclear.core

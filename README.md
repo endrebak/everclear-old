@@ -1,4 +1,4 @@
-# everflow
+# everclear
 
 generated using Luminus version "3.57"
 
@@ -23,14 +23,23 @@ Copyright © 2020, 2021 FIXME
 ## REPL
 
 ``` clojure
-(require 'everflow.routes.home)
-(in-ns 'everflow.routes.home)
-; everflow.routes.home=> @connected-uids
+(require 'everclear.routes.home)
+(in-ns 'everclear.routes.home)
+
+
+(require 'everclear.state.filewatch)
+(in-ns 'everclear.state.filewatch)
+
+; everclear.routes.home=> @connected-uids
 ; {:ws #{}, :ajax #{}, :any #{}}
-; reload browser window
-; everflow.routes.home=> @connected-uids
+; reload browser windowuser=>
+; everclear.routes.home=> @connected-uids
 ; {:ws #{:taoensso.sente/nil-uid}, :ajax #{}, :any #{:taoensso.sente/nil-uid}}
+
 (chsk-send! :taoensso.sente/nil-uid [:h/h "hooo"])
 (chsk-send! :taoensso.sente/nil-uid [:h/h "hoooiiiii"])
 (chsk-send! :taoensso.sente/nil-uid [:h/h "hoooiiiiioooo"])
+
+(chsk-send! :sente/all-users-without-uid [:h/h "haaaffa"])
+; ^^^^^^^ BETTER!
 ```

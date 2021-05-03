@@ -1,0 +1,2 @@
+{:rule-file "examples/simple_example/rules.clj"
+ :wildcards-file "examples/simple_example/wildcards.edn"}

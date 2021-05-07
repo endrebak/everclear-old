@@ -41,6 +41,7 @@
 (rf/reg-event-db
  :save-jobinfo
  (fn [db [_ jobinfo]]
+   (js/console.log (str "jobinfo updated: " jobinfo))
    (assoc db :jobinfo jobinfo)))
 
 (rf/reg-event-db

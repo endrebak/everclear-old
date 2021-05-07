@@ -4,6 +4,7 @@
    [clojure.edn :as edn]
    ;; [dag.checks :as checks]
    ;;
+   [everclear.routes.home :as routes]
    [everclear.dag.parse-rulefiles :as parse]
    [everclear.state.filewatch :as filewatch]
    [everclear.state.state :as state]
@@ -38,5 +39,10 @@
      (fn [ctx e]
        (println (str "ctx: " ctx))
        (println (str "e: " e))
+       (println (java.time.LocalDateTime/now))
+       ;; (routes/chsk-send! :sente/all-users-without-uid [:h/h new-state])
        (reset! state/jobinfo
-               (cj/create-jobinfo rules wildcards external))))))
+               (cj/create-jobinfo
+                (parse/read-rules rule-file)
+                (file-to-map wildcards-file)
+                (file-to-map externals-file)))))))

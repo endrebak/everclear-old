@@ -2,6 +2,7 @@
   "Map DNA sequences against a reference genome with BWA."
   {:wildcards [:sample :genome]
    :external  [:genome :fastq]
+   :input     "quals.svg"
    :output    "bwa-map.bam"
    :threads   8
    :params    {:rg "@RG\tID:{{wildcards.sample}}\tSM:{{wildcards.sample}}"}

@@ -7,7 +7,7 @@
 
 (defn initiate-watch! [n fs fn]
   (swap! state/watches
-         assoc n (hawk/watch! [{:paths fs :handler fn}])))
+         assoc n (hawk/watch! {:watcher :polling :sensitivity :high} [{:paths fs :handler fn}])))
 
 (defn end-watch! [n]
   (hawk/stop! (@state/watches n))
@@ -16,5 +16,7 @@
 (add-watch state/jobinfo :jobinfo-watcher
            (fn [key atom old-state new-state]
              (prn "-- Atom Changed --")
+             (prn new-state)
              (routes/chsk-send! :sente/all-users-without-uid [:h/h new-state])
-             (p/pprint (vec new-state))))
+             ;; (p/pprint (vec new-state))
+             ))

@@ -6,6 +6,17 @@
             [selmer.parser :refer [render]])
   (:use [hashp.core]))
 
+(defmacro timed [expr]
+  (let [sym (= (type expr) clojure.lang.Symbol)]
+    `(let [start# (. System (nanoTime))
+           return# ~expr
+           res# (if ~sym
+                    (resolve '~expr)
+                    (resolve (first '~expr)))]
+       (prn (str "Timed "
+           (:name (meta res#))
+           ": " (/ (double (- (. System (nanoTime)) start#)) 1000000.0) " msecs"))
+       return#)))
 (defn flatten-rules [rules]
   (for [rule (vals rules)
         outfile (or (vals (:output rule)) [nil])
@@ -206,26 +217,66 @@
 ;;       (fill-code rules)))
 
 (defn create-jobinfo [rules wildcards external]
-  (let [merged-connected-rules (-> rules
-                                   flatten-rules
-                                   connect-rules
-                                   merge-connected-rules)
+  (try
+    (let [merged-connected-rules (-> rules
+                                     flatten-rules
+                                     connect-rules
+                                     merge-connected-rules)
+
+          ;; _ #p (distinct (map (juxt :in-rule :out-rule) merged-connected-rules))
+          ;; _ #p merged-connected-rules
+          ;; _ #p (map :out-rule  merged-connected-rules)
+          rulegraph (create-rulegraph merged-connected-rules)
+
+          jobinfo (-> merged-connected-rules
+                      (create-jobs wildcards)
+                      add-paths
+                      (paths-into-map rules)
+                      merge-paths
+                      (add-external-paths rules external)
+                      fill-params
+                      (fill-code rules))
+          jobgraph (create-jobgraph jobinfo)
+          ]
+
+      ;; (distinct (map (juxt :in-rule :out-rule) jobinfo))
+      {:jobinfo jobinfo})
+    (catch Exception e
+      {:exception-message (str e)})))
+
+
+
+(defn create-jobinfo-timed [rules wildcards external]
+  (let [flattened-rules (timed (flatten-rules rules))
+        connected-rules (timed (connect-rules flattened-rules))
+        merged-connected-rules (timed (merge-connected-rules connected-rules))
+
         ;; _ #p (distinct (map (juxt :in-rule :out-rule) merged-connected-rules))
         ;; _ #p merged-connected-rules
         ;; _ #p (map :out-rule  merged-connected-rules)
-        rulegraph (create-rulegraph merged-connected-rules)
+        rulegraph (timed (create-rulegraph merged-connected-rules))
 
-        jobinfo (-> merged-connected-rules
-                    (create-jobs wildcards)
-                    add-paths
-                    (paths-into-map rules)
-                    merge-paths
-                    (add-external-paths rules external)
-                    fill-params
-                    (fill-code rules))
-        jobgraph (create-jobgraph jobinfo)]
+        created-jobs (timed (create-jobs merged-connected-rules wildcards))
+        added-paths (timed (add-paths created-jobs))
+        paths-in-maps (timed (paths-into-map added-paths rules))
+        merged-paths (timed (merge-paths paths-in-maps))
+        added-external-paths (timed (add-external-paths merged-paths rules external))
+        filled-params (timed (fill-params added-external-paths))
+        jobinfo (timed (fill-code filled-params rules))
+
+        ;; jobinfo (-> merged-connected-rules
+        ;;             (create-jobs wildcards)
+        ;;             add-paths
+        ;;             (paths-into-map rules)
+        ;;             merge-paths
+        ;;             (add-external-paths rules external)
+        ;;             fill-params
+        ;;             (fill-code rules))
+        jobgraph (timed (create-jobgraph jobinfo))]
 
     ;; (distinct (map (juxt :in-rule :out-rule) jobinfo))
+
+    (println (java.time.LocalDateTime/now))
     jobinfo))
 
     ;; ))

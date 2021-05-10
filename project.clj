@@ -75,7 +75,8 @@
   :npm-deps [[shadow-cljs "2.8.69"]
              [create-react-class "15.6.3"]
              [react "16.8.6"]
-             [react-dom "16.8.6"]]
+             [react-dom "16.8.6"]
+             [d3-dag "0.7.0"]]
 
   :profiles
   {:uberjar {:omit-source true

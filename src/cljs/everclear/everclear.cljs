@@ -1,11 +1,9 @@
 (ns everclear.everclear ; .cljs
   (:require-macros
-   [cljs.core.async.macros :as asyncm :refer (go go-loop)]
-   [clojure.string :as str])
+   [cljs.core.async.macros :as asyncm :refer (go go-loop)])
   (:require
    ;; <other stuff>
    [clojure.pprint :as pp]
-   [clojure.string :as str]
    [re-frame.core :as rf]
    [everclear.events :as reframe-events]
    [cljs.core.async :as async :refer (<! >! put! chan)]
@@ -66,7 +64,8 @@
        :on-click #(chsk-send! [:everclear/button "Hooo!"])}]
      (let [jobinfo @(rf/subscribe [:jobinfo])]
        [:div
-        [:pre (with-out-str (pp/pprint jobinfo))]])]))
+        [:pre (with-out-str (pp/pprint jobinfo))]
+        ])]))
 
 (defonce router_ (atom nil))
 (defn  stop-router! [] (when-let [stop-f @router_] (stop-f)))
